@@ -1,26 +1,24 @@
-import { ref, onMounted } from 'vue'
-import { 
-  getAuth, 
-  createUserWithEmailAndPassword, 
+import { ref } from 'vue'
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
-  onAuthStateChanged 
+  onAuthStateChanged,
 } from 'firebase/auth'
 
 const auth = getAuth()
 const user = ref(null)
 const loading = ref(true)
 
+// Initialize auth state listener immediately (not in onMounted)
+onAuthStateChanged(auth, (currentUser) => {
+  user.value = currentUser
+  loading.value = false
+})
+
 export function useAuth() {
   const error = ref(null)
-
-  // Initialize auth state listener (only once)
-  onMounted(() => {
-    onAuthStateChanged(auth, (currentUser) => {
-      user.value = currentUser
-      loading.value = false
-    })
-  })
 
   // Sign up new user
   const signUp = async (email, password) => {
@@ -72,7 +70,7 @@ export function useAuth() {
     error,
     signUp,
     signIn,
-    logOut
+    logOut,
   }
 }
 

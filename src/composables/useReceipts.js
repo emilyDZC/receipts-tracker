@@ -10,6 +10,7 @@ export function useReceipts() {
   const error = ref(null)
 
   // Fetch receipts for current user only
+  // Fetch receipts for current user only
   const fetchReceipts = async () => {
     if (!user.value) {
       receipts.value = []
@@ -19,16 +20,16 @@ export function useReceipts() {
     loading.value = true
     error.value = null
     try {
-      const q = query(
-        collection(db, 'receipts'),
-        where('userId', '==', user.value.uid),
-        orderBy('createdAt', 'desc'),
-      )
+      const q = query(collection(db, 'receipts'), where('userId', '==', user.value.uid))
       const querySnapshot = await getDocs(q)
-      receipts.value = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }))
+
+      // Sort in JavaScript instead of Firestore
+      receipts.value = querySnapshot.docs
+        .map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }))
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
     } catch (err) {
       error.value = err.message
     } finally {

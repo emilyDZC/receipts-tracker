@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import ReceiptList from '@/components/ReceiptList.vue'
 import ReceiptCapture from '@/components/ReceiptCapture.vue'
 import AuthForm from '@/components/AuthForm.vue'
-import { user, loading } from '@/composables/useAuth'
+import { getAuth } from 'firebase/auth'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -27,25 +27,18 @@ const router = createRouter({
   ],
 })
 
-// Navigation guard
+// Simplified navigation guard
 router.beforeEach((to, from, next) => {
-  // Wait for auth to initialize
-  const checkAuth = () => {
-    if (loading.value) {
-      setTimeout(checkAuth, 50)
-      return
-    }
+  const auth = getAuth()
+  const user = auth.currentUser
 
-    if (to.meta.requiresAuth && !user.value) {
-      next('/login')
-    } else if (to.path === '/login' && user.value) {
-      next('/')
-    } else {
-      next()
-    }
+  if (to.meta.requiresAuth && !user) {
+    next('/login')
+  } else if (to.path === '/login' && user) {
+    next('/')
+  } else {
+    next()
   }
-
-  checkAuth()
 })
 
 export default router
