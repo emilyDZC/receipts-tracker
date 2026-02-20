@@ -1,11 +1,11 @@
 <template>
   <div class="max-w-md mx-auto p-4">
     <div class="flex justify-between items-center mb-6">
-      <h1 class="text-3xl font-bold">My Receipts</h1>
+      <h1 class="text-gray-600 text-3xl font-bold">My Receipts</h1>
       <div class="flex gap-2">
         <router-link 
           to="/add"
-          class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
+          class="bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700 transition"
         >
           + Add
         </router-link>
@@ -27,7 +27,7 @@
     </div>
 
     <div v-else-if="receipts.length === 0" class="text-center py-8">
-      <p class="text-gray-600">No receipts yet. Add your first one!</p>
+      <p class="text-gray-900">No receipts yet. Add your first one!</p>
     </div>
 
     <div v-else class="space-y-4">
@@ -42,8 +42,8 @@
           class="w-20 h-20 object-cover rounded flex-shrink-0"
         >
         <div class="flex-1">
-          <h3 class="font-semibold text-lg">{{ receipt.merchant }}</h3>
-          <p class="text-2xl font-bold text-blue-600">${{ receipt.amount.toFixed(2) }}</p>
+          <h3 class="text-gray-600 font-semibold text-lg">{{ receipt.merchant }}</h3>
+          <p class="text-2xl font-bold text-teal-600">£{{ receipt.amount.toFixed(2) }}</p>
           <p class="text-sm text-gray-600">{{ receipt.category }}</p>
           <p class="text-xs text-gray-500">{{ formatDate(receipt.date) }}</p>
         </div>

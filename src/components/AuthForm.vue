@@ -8,7 +8,7 @@
           @click="isSignUp = false"
           :class="[
             'flex-1 py-2 px-4 rounded-md transition',
-            !isSignUp ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'
+            !isSignUp ? 'bg-teal-600 text-white' : 'bg-gray-200 text-gray-700'
           ]"
         >
           Sign In
@@ -17,7 +17,7 @@
           @click="isSignUp = true"
           :class="[
             'flex-1 py-2 px-4 rounded-md transition',
-            isSignUp ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'
+            isSignUp ? 'bg-teal-600 text-white' : 'bg-gray-200 text-gray-700'
           ]"
         >
           Sign Up
@@ -31,7 +31,7 @@
             v-model="email" 
             type="email" 
             required
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
             placeholder="you@example.com"
           >
         </div>
@@ -42,7 +42,7 @@
             v-model="password" 
             type="password" 
             required
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
             placeholder="••••••••"
           >
         </div>
@@ -54,7 +54,7 @@
         <button 
           type="submit"
           :disabled="loading"
-          class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition"
+          class="w-full bg-teal-600 text-white py-2 px-4 rounded-md hover:bg-teal-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition"
         >
           {{ loading ? 'Loading...' : (isSignUp ? 'Sign Up' : 'Sign In') }}
         </button>
