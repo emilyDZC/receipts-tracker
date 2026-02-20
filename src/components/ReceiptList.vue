@@ -2,12 +2,20 @@
   <div class="max-w-md mx-auto p-4">
     <div class="flex justify-between items-center mb-6">
       <h1 class="text-3xl font-bold">My Receipts</h1>
-      <router-link 
-        to="/add"
-        class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
-      >
-        + Add
-      </router-link>
+      <div class="flex gap-2">
+        <router-link 
+          to="/add"
+          class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
+        >
+          + Add
+        </router-link>
+        <button 
+          @click="handleLogout"
+          class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition"
+        >
+          Logout
+        </button>
+      </div>
     </div>
 
     <div v-if="loading" class="text-center py-8">
@@ -27,19 +35,19 @@
         v-for="receipt in receipts" 
         :key="receipt.id"
         class="bg-white rounded-lg shadow-md p-4 flex gap-4"
-        >
+      >
         <img 
-            :src="receipt.imageUrl" 
-            :alt="receipt.merchant"
-            class="w-20 h-20 object-cover rounded flex-shrink-0"
+          :src="receipt.imageUrl" 
+          :alt="receipt.merchant"
+          class="w-20 h-20 object-cover rounded flex-shrink-0"
         >
         <div class="flex-1">
-            <h3 class="font-semibold text-lg">{{ receipt.merchant }}</h3>
-            <p class="text-2xl font-bold text-blue-600">${{ receipt.amount.toFixed(2) }}</p>
-            <p class="text-sm text-gray-600">{{ receipt.category }}</p>
-            <p class="text-xs text-gray-500">{{ formatDate(receipt.date) }}</p>
+          <h3 class="font-semibold text-lg">{{ receipt.merchant }}</h3>
+          <p class="text-2xl font-bold text-blue-600">${{ receipt.amount.toFixed(2) }}</p>
+          <p class="text-sm text-gray-600">{{ receipt.category }}</p>
+          <p class="text-xs text-gray-500">{{ formatDate(receipt.date) }}</p>
         </div>
-        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -47,8 +55,12 @@
 <script setup>
 import { onMounted } from 'vue'
 import { useReceipts } from '@/composables/useReceipts'
+import { useAuth } from '@/composables/useAuth'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const { receipts, loading, error, fetchReceipts } = useReceipts()
+const { logOut } = useAuth()
 
 onMounted(() => {
   fetchReceipts()
@@ -60,5 +72,14 @@ const formatDate = (dateString) => {
     day: 'numeric',
     year: 'numeric'
   })
+}
+
+const handleLogout = async () => {
+  try {
+    await logOut()
+    router.push('/login')
+  } catch (err) {
+    alert('Error logging out: ' + err.message)
+  }
 }
 </script>
