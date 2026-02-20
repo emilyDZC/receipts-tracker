@@ -112,6 +112,7 @@
 import { ref } from 'vue'
 import { useReceipts } from '@/composables/useReceipts'
 import { useRouter } from 'vue-router'
+import { compressImage } from '@/utils/imageCompression'
 
 const router = useRouter()
 const { addReceipt, loading } = useReceipts()
@@ -127,15 +128,24 @@ const formData = ref({
   notes: ''
 })
 
-const handleImageSelect = (event) => {
+const handleImageSelect = async (event) => {
   const file = event.target.files[0]
   if (file) {
-    imageFile.value = file
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      imagePreview.value = e.target.result
+    try {
+      // Compress the image
+      const compressedFile = await compressImage(file, 800, 0.8)
+      imageFile.value = compressedFile
+      
+      // Create preview
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        imagePreview.value = e.target.result
+      }
+      reader.readAsDataURL(compressedFile)
+    } catch (error) {
+      console.error('Error compressing image:', error)
+      alert('Error processing image')
     }
-    reader.readAsDataURL(file)
   }
 }
 
