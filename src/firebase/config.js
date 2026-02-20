@@ -3,12 +3,12 @@ import { getFirestore } from 'firebase/firestore'
 import { getStorage } from 'firebase/storage'
 
 const firebaseConfig = {
-apiKey: "AIzaSyD0SCwEoYOFa6F4i0fQDjCSqPDnX1e8QtM",
-  authDomain: "receipt-tracker-f6d3f.firebaseapp.com",
-  projectId: "receipt-tracker-f6d3f",
-  storageBucket: "receipt-tracker-f6d3f.firebasestorage.app",
-  messagingSenderId: "202091204236",
-  appId: "1:202091204236:web:5aefcad4ef83b3e97335a9"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
 }
 
 const app = initializeApp(firebaseConfig)
