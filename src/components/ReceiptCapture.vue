@@ -5,7 +5,7 @@
       
       <!-- Image Preview -->
       <div v-if="imagePreview" class="mb-4">
-        <img :src="imagePreview" alt="Receipt preview" class="w-full rounded-lg">
+        <img :src="imagePreview" alt="Receipt preview" class="w-full h-64 object-contain rounded-lg border border-gray-300">
         <button 
           @click="clearImage"
           class="mt-2 text-red-600 text-sm"

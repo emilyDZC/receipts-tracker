@@ -27,19 +27,19 @@
         v-for="receipt in receipts" 
         :key="receipt.id"
         class="bg-white rounded-lg shadow-md p-4 flex gap-4"
-      >
+        >
         <img 
-          :src="receipt.imageUrl" 
-          :alt="receipt.merchant"
-          class="w-20 h-20 object-cover rounded"
+            :src="receipt.imageUrl" 
+            :alt="receipt.merchant"
+            class="w-20 h-20 object-cover rounded flex-shrink-0"
         >
         <div class="flex-1">
-          <h3 class="font-semibold text-lg">{{ receipt.merchant }}</h3>
-          <p class="text-2xl font-bold text-blue-600">${{ receipt.amount.toFixed(2) }}</p>
-          <p class="text-sm text-gray-600">{{ receipt.category }}</p>
-          <p class="text-xs text-gray-500">{{ formatDate(receipt.date) }}</p>
+            <h3 class="font-semibold text-lg">{{ receipt.merchant }}</h3>
+            <p class="text-2xl font-bold text-blue-600">${{ receipt.amount.toFixed(2) }}</p>
+            <p class="text-sm text-gray-600">{{ receipt.category }}</p>
+            <p class="text-xs text-gray-500">{{ formatDate(receipt.date) }}</p>
         </div>
-      </div>
+        </div>
     </div>
   </div>
 </template>
