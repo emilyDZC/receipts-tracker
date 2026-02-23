@@ -31,10 +31,11 @@
     </div>
 
     <div v-else class="space-y-4">
-      <div 
+      <router-link
         v-for="receipt in receipts" 
         :key="receipt.id"
-        class="bg-white rounded-lg shadow-md p-4 flex gap-4"
+        :to="`/receipt/${receipt.id}`"
+        class="bg-white rounded-lg shadow-md p-4 flex gap-4 hover:shadow-lg transition cursor-pointer block"
       >
         <img 
           :src="receipt.imageUrl" 
@@ -47,7 +48,10 @@
           <p class="text-sm text-gray-600">{{ receipt.category }}</p>
           <p class="text-xs text-gray-500">{{ formatDate(receipt.date) }}</p>
         </div>
-      </div>
+        <div class="flex items-center text-gray-400">
+          <span class="text-xl">›</span>
+        </div>
+      </router-link>
     </div>
   </div>
 </template>
