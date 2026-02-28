@@ -1,20 +1,28 @@
 <template>
   <div class="max-w-md mx-auto p-4">
     <div class="flex justify-between items-center mb-6">
-      <h1 class="text-gray-600 text-3xl font-bold">My Receipts</h1>
+      <h1 class="text-3xl font-bold">My Receipts</h1>
+      <button 
+        @click="handleLogout"
+        class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition"
+      >
+        Logout
+      </button>
+    </div>
+    <div class="flex justify-between items-center mb-6">
       <div class="flex gap-2">
         <router-link 
           to="/add"
           class="bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700 transition"
         >
-          + Add
+          + Add receipt
         </router-link>
-        <button 
-          @click="handleLogout"
-          class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition"
+        <router-link 
+          to="/add-journey"
+          class="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition"
         >
-          Logout
-        </button>
+          🚗 Add journey
+        </router-link>
       </div>
     </div>
 
