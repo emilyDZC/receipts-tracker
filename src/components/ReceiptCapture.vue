@@ -1,7 +1,10 @@
 <template>
   <div class="max-w-md mx-auto p-4">
     <div class="bg-white rounded-lg shadow-md p-6">
-      <h2 class="text-2xl font-bold mb-4">Add Receipt</h2>
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold">Add Receipt</h1>
+        <button @click="router.push('/')" class="text-gray-600 hover:text-gray-800">✕</button>
+      </div>
       
       <!-- Image Preview -->
       <div v-if="imagePreview" class="mb-4">
@@ -27,7 +30,6 @@
           <input 
             type="file" 
             accept="image/*" 
-            capture="environment"
             @change="handleImageSelect"
             class="hidden"
           >

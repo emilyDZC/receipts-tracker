@@ -9,23 +9,93 @@
       <!-- Journey Form -->
       <form @submit.prevent="handleCalculate" class="space-y-4">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Starting Point</label>
-          <input
-            v-model="origin"
-            type="text"
-            required
-            placeholder="e.g. Birmingham Symphony Hall"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-        </div>
+  <label class="block text-sm font-medium text-gray-700 mb-1">
+    Starting Point
+  </label>
+
+  <div class="flex gap-2">
+    <input
+      v-model="origin"
+      type="text"
+      required
+      placeholder="e.g. Birmingham Symphony Hall"
+      class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+    >
+
+    <select
+      v-model="selectedOriginLocationId"
+      class="w-28 px-2 py-2 border border-gray-300 rounded-md bg-white text-sm"
+      title="Use saved location"
+    >
+      <option value="">Use saved</option>
+      <option
+        v-for="loc in locations"
+        :key="loc.id"
+        :value="loc.id"
+      >
+        {{ loc.label }}
+      </option>
+    </select>
+
+    <button
+      v-if="homeLocation"
+      type="button"
+      @click="setOriginHome"
+      class="px-3 py-2 rounded-md border border-gray-300 bg-white hover:bg-gray-50 text-sm"
+      title="Set start to Home"
+    >
+      Home
+    </button>
+  </div>
+</div>
+
+       <div>
+  <label class="block text-sm font-medium text-gray-700 mb-1">
+    Destination
+  </label>
+
+  <div class="flex gap-2">
+    <input
+      v-model="destination"
+      type="text"
+      required
+      placeholder="e.g. MediaCity"
+      class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+    >
+
+    <select
+      v-model="selectedDestinationLocationId"
+      class="w-28 px-2 py-2 border border-gray-300 rounded-md bg-white text-sm"
+      title="Use saved location"
+    >
+      <option value="">Use saved</option>
+      <option
+        v-for="loc in locations"
+        :key="loc.id"
+        :value="loc.id"
+      >
+        {{ loc.label }}
+      </option>
+    </select>
+
+    <button
+      v-if="homeLocation"
+      type="button"
+      @click="setDestinationHome"
+      class="px-3 py-2 rounded-md border border-gray-300 bg-white hover:bg-gray-50 text-sm"
+      title="Set destination to Home"
+    >
+      Home
+    </button>
+  </div>
+</div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Destination</label>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Work / Orchestra</label>
           <input
-            v-model="destination"
+            v-model="work"
             type="text"
-            required
-            placeholder="e.g. MediaCity"
+            placeholder="e.g. CBSO"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
         </div>
@@ -146,6 +216,8 @@
                   £{{ journey.totalCost ?? journey.cost }}
                 </p>
 
+                <p v-if="journey.work" class="text-xs text-gray-500 mt-1">{{ journey.work }}</p>
+
                 <p v-if="journey.notes" class="text-xs text-gray-500 mt-1">{{ journey.notes }}</p>
               </div>
 
@@ -167,18 +239,24 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useJourneys } from '@/composables/useJourneys'
+import { useLocations } from '@/composables/useLocations'
 
 const router = useRouter()
 const { journeys, loading, error, calculateRoute, fetchJourneys, saveJourney, deleteJourney } = useJourneys()
+
+const { locations, fetchLocations } = useLocations()
+const selectedOriginLocationId = ref('')
+const selectedDestinationLocationId = ref('')
 
 const origin = ref('')
 const destination = ref('')
 const mileageRate = ref(0.45)
 const journeyDate = ref(new Date().toISOString().slice(0, 10)) // YYYY-MM-DD
 const notes = ref('')
+const work = ref('')
 const isReturn = ref(false)
 
 const result = ref(null)
@@ -186,6 +264,48 @@ const showJourneys = ref(false)
 
 onMounted(() => {
   fetchJourneys()
+})
+
+onMounted(async () => {
+  await fetchLocations()
+})
+
+const homeLocation = computed(() => {
+  return (locations.value || []).find(
+    (l) => String(l.label || '').trim().toLowerCase() === 'home'
+  )
+})
+
+const applyLocationToOrigin = (locationId) => {
+  const loc = (locations.value || []).find((l) => l.id === locationId)
+  if (!loc) return
+  origin.value = loc.address
+}
+
+const applyLocationToDestination = (locationId) => {
+  const loc = (locations.value || []).find((l) => l.id === locationId)
+  if (!loc) return
+  destination.value = loc.address
+}
+
+const setOriginHome = () => {
+  if (!homeLocation.value) return
+  origin.value = homeLocation.value.address
+}
+
+const setDestinationHome = () => {
+  if (!homeLocation.value) return
+  destination.value = homeLocation.value.address
+}
+
+watch(selectedOriginLocationId, (id) => {
+  if (!id) return
+  applyLocationToOrigin(id)
+})
+
+watch(selectedDestinationLocationId, (id) => {
+  if (!id) return
+  applyLocationToDestination(id)
 })
 
 // Recompute totals when return checkbox changes (after a calculation)
@@ -217,6 +337,7 @@ const handleCalculate = async () => {
       origin: origin.value,
       destination: destination.value,
       journeyDate: journeyDate.value,
+      work: work.value,
     }
 
     recomputeTotals()
@@ -233,6 +354,7 @@ const handleSave = async () => {
       origin: result.value.origin,
       destination: result.value.destination,
       journeyDate: journeyDate.value,
+      work: work.value,
 
       // one-way
       distanceMiles: result.value.distanceMiles,
@@ -256,6 +378,7 @@ const handleSave = async () => {
     origin.value = ''
     destination.value = ''
     isReturn.value = false
+    work.value = ''
 
     // optional: expand journeys so you see it saved
     showJourneys.value = true

@@ -36,7 +36,6 @@
             <input 
               type="file" 
               accept="image/*" 
-              capture="environment"
               @change="handleImageReplace"
               class="hidden"
             >

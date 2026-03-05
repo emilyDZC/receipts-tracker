@@ -3,6 +3,8 @@ import ReceiptList from '@/components/ReceiptList.vue'
 import ReceiptCapture from '@/components/ReceiptCapture.vue'
 import ReceiptDetail from '@/components/ReceiptDetail.vue'
 import CalculateJourney from '@/components/CalculateJourney.vue'
+import StatsPage from '@/components/StatsPage.vue'
+import SettingsPage from '@/components/SettingsPage.vue'
 import AuthForm from '@/components/AuthForm.vue'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 
@@ -31,6 +33,18 @@ const router = createRouter({
       path: '/receipt/:id',
       name: 'receipt-detail',
       component: ReceiptDetail,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/stats',
+      name: 'stats',
+      component: StatsPage,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/settings',
+      name: 'settings',
+      component: SettingsPage,
       meta: { requiresAuth: true },
     },
     {

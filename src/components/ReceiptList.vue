@@ -2,12 +2,58 @@
   <div class="max-w-md mx-auto p-4">
     <div class="flex justify-between items-center mb-6">
       <h1 class="text-3xl font-bold">My Receipts</h1>
-      <button 
-        @click="handleLogout"
-        class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition"
-      >
-        Logout
-      </button>
+      <div class="relative" v-click-outside="closeMenu">
+        <!-- burger button + dropdown -->
+        <div class="relative">
+          <button
+            @click="toggleMenu"
+            class="bg-gray-600 text-white px-3 py-2 rounded-md hover:bg-gray-700 transition"
+            aria-label="Open menu"
+            aria-haspopup="menu"
+            :aria-expanded="isMenuOpen ? 'true' : 'false'"
+          >
+            <!-- burger icon -->
+            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+
+          <div
+            v-if="isMenuOpen"
+            class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50 overflow-hidden"
+            role="menu"
+          >
+            <!-- Links you can add later -->
+            <router-link
+              to="/stats"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              role="menuitem"
+              @click="closeMenu"
+            >
+              Stats
+            </router-link>
+
+            <router-link
+              to="/settings"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              role="menuitem"
+              @click="closeMenu"
+            >
+              Settings
+            </router-link>
+
+            <div class="border-t border-gray-200"></div>
+
+            <button
+              @click="handleLogoutFromMenu"
+              class="w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-red-50"
+              role="menuitem"
+            >
+              Logout
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="flex justify-between items-center mb-6">
       <div class="flex gap-2">
@@ -65,7 +111,7 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted, ref, onBeforeUnmount } from 'vue'
 import { useReceipts } from '@/composables/useReceipts'
 import { useAuth } from '@/composables/useAuth'
 import { useRouter } from 'vue-router'
@@ -93,5 +139,28 @@ const handleLogout = async () => {
   } catch (err) {
     alert('Error logging out: ' + err.message)
   }
+}
+
+const isMenuOpen = ref(false)
+
+const closeMenu = () => {
+  isMenuOpen.value = false
+}
+
+const toggleMenu = () => {
+  isMenuOpen.value = !isMenuOpen.value
+}
+
+// Close on Escape
+const onKeyDown = (e) => {
+  if (e.key === 'Escape') closeMenu()
+}
+
+window.addEventListener('keydown', onKeyDown)
+onBeforeUnmount(() => window.removeEventListener('keydown', onKeyDown))
+
+const handleLogoutFromMenu = async () => {
+  closeMenu()
+  await handleLogout()
 }
 </script>
