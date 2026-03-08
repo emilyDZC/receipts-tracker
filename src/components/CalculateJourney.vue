@@ -9,86 +9,90 @@
       <!-- Journey Form -->
       <form @submit.prevent="handleCalculate" class="space-y-4">
         <div>
-  <label class="block text-sm font-medium text-gray-700 mb-1">
-    Starting Point
-  </label>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            Starting Point
+          </label>
 
-  <div class="flex gap-2">
-    <input
-      v-model="origin"
-      type="text"
-      required
-      placeholder="e.g. Birmingham Symphony Hall"
-      class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-    >
+          <div class="space-y-2 sm:space-y-0 sm:grid sm:grid-cols-[1fr_auto_auto] sm:gap-2">
+            <!-- Row 1 on mobile, col 1 on sm+ -->
+            <input
+              v-model="origin"
+              type="text"
+              required
+              placeholder="e.g. Birmingham Symphony Hall"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
 
-    <select
-      v-model="selectedOriginLocationId"
-      class="w-28 px-2 py-2 border border-gray-300 rounded-md bg-white text-sm"
-      title="Use saved location"
-    >
-      <option value="">Use saved</option>
-      <option
-        v-for="loc in locations"
-        :key="loc.id"
-        :value="loc.id"
-      >
-        {{ loc.label }}
-      </option>
-    </select>
+            <!-- Row 2 on mobile: dropdown + home side-by-side -->
+            <div class="grid grid-cols-[1fr_auto] gap-2 sm:contents">
+              <select
+                v-model="selectedOriginLocationId"
+                class="w-full sm:w-36 px-2 py-2 border border-gray-300 rounded-md bg-white text-sm"
+                title="Use saved location"
+              >
+                <option value="">Use saved</option>
+                <option v-for="loc in locations" :key="loc.id" :value="loc.id">
+                  {{ loc.label }}
+                </option>
+              </select>
 
-    <button
-      v-if="homeLocation"
-      type="button"
-      @click="setOriginHome"
-      class="px-3 py-2 rounded-md border border-gray-300 bg-white hover:bg-gray-50 text-sm"
-      title="Set start to Home"
-    >
-      Home
-    </button>
-  </div>
-</div>
+              <button
+                v-if="homeLocation"
+                type="button"
+                @click="setOriginHome"
+                class="px-3 py-2 rounded-md border border-gray-300 bg-white hover:bg-gray-50 text-sm flex items-center justify-center"
+                title="Set start to Home"
+                aria-label="Set start to Home"
+              >
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 10.5L12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1v-10.5z" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
 
        <div>
-  <label class="block text-sm font-medium text-gray-700 mb-1">
-    Destination
-  </label>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            Destination
+          </label>
 
-  <div class="flex gap-2">
-    <input
-      v-model="destination"
-      type="text"
-      required
-      placeholder="e.g. MediaCity"
-      class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-    >
+          <div class="space-y-2 sm:space-y-0 sm:grid sm:grid-cols-[1fr_auto_auto] sm:gap-2">
+            <input
+              v-model="destination"
+              type="text"
+              required
+              placeholder="e.g. MediaCity"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
 
-    <select
-      v-model="selectedDestinationLocationId"
-      class="w-28 px-2 py-2 border border-gray-300 rounded-md bg-white text-sm"
-      title="Use saved location"
-    >
-      <option value="">Use saved</option>
-      <option
-        v-for="loc in locations"
-        :key="loc.id"
-        :value="loc.id"
-      >
-        {{ loc.label }}
-      </option>
-    </select>
+            <div class="grid grid-cols-[1fr_auto] gap-2 sm:contents">
+              <select
+                v-model="selectedDestinationLocationId"
+                class="w-full sm:w-36 px-2 py-2 border border-gray-300 rounded-md bg-white text-sm"
+                title="Use saved location"
+              >
+                <option value="">Use saved</option>
+                <option v-for="loc in locations" :key="loc.id" :value="loc.id">
+                  {{ loc.label }}
+                </option>
+              </select>
 
-    <button
-      v-if="homeLocation"
-      type="button"
-      @click="setDestinationHome"
-      class="px-3 py-2 rounded-md border border-gray-300 bg-white hover:bg-gray-50 text-sm"
-      title="Set destination to Home"
-    >
-      Home
-    </button>
-  </div>
-</div>
+              <button
+                v-if="homeLocation"
+                type="button"
+                @click="setDestinationHome"
+                class="px-3 py-2 rounded-md border border-gray-300 bg-white hover:bg-gray-50 text-sm flex items-center justify-center"
+                title="Set destination to Home"
+                aria-label="Set destination to Home"
+              >
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 10.5L12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1v-10.5z" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Work / Orchestra</label>
