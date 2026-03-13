@@ -209,7 +209,9 @@
           >
             <div class="flex justify-between items-start gap-2">
               <div class="flex-1 min-w-0">
-                <p class="font-medium text-sm truncate">
+                <p v-if="journey.work" class="font-medium text-sm truncate">{{ journey.work }}</p>
+
+                <p v-else class="font-medium text-sm truncate">
                   {{ journey.origin }} → {{ journey.destination }}
                   <span v-if="journey.isReturn" class="text-gray-500">(return)</span>
                 </p>
@@ -220,7 +222,11 @@
                   £{{ journey.totalCost ?? journey.cost }}
                 </p>
 
-                <p v-if="journey.work" class="text-xs text-gray-500 mt-1">{{ journey.work }}</p>
+                <!-- <p v-if="journey.work" class="text-xs text-gray-500 mt-1">{{ journey.work }}</p> -->
+                <p v-if="journey.work" class="text-xs text-gray-500 mt-1">
+                  {{ journey.origin }} → {{ journey.destination }}
+                  <span v-if="journey.isReturn" class="text-gray-500">(return)</span>
+                </p>
 
                 <p v-if="journey.notes" class="text-xs text-gray-500 mt-1">{{ journey.notes }}</p>
               </div>
