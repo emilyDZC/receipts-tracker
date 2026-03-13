@@ -55,19 +55,19 @@
         </div>
       </div>
     </div>
-    <div class="flex justify-between items-center mb-6">
-      <div class="flex gap-2">
+    <div class="mb-6">
+      <div class="flex flex-col sm:flex-row gap-3 w-full">
         <router-link 
           to="/add"
-          class="bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700 transition"
+          class="w-full sm:flex-1 bg-teal-600 text-white px-6 py-8 rounded-md hover:bg-teal-700 transition text-center text-xl font-semibold"
         >
-          + Add receipt
+          + Receipt
         </router-link>
         <router-link 
           to="/add-journey"
-          class="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition"
+          class="w-full sm:flex-1 bg-indigo-500 text-white px-6 py-8 rounded-md hover:bg-indigo-700 transition text-center text-xl font-semibold"
         >
-          🚗 Add journey
+          🚗 Journey
         </router-link>
       </div>
     </div>
