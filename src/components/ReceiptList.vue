@@ -85,11 +85,68 @@
     </div>
 
     <div v-else class="space-y-4">
-      <ReceiptCard
-        v-for="receipt in receipts"
-        :key="receipt.id"
-        :receipt="receipt"
-      />
+      <!-- Current month -->
+      <div class="mb-4">
+        <h2 class="text-sm font-semibold text-gray-600 mb-2">
+          This month
+        </h2>
+
+        <div v-if="currentMonthReceipts.length === 0" class="text-sm text-gray-500">
+          No receipts yet this month.
+        </div>
+
+        <div v-else class="space-y-3">
+          <ReceiptCard
+            v-for="r in currentMonthReceipts"
+            :key="r.id"
+            :receipt="r"
+          />
+        </div>
+      </div>
+
+     <!-- Previous months -->
+      <div>
+        <h2 class="text-sm font-semibold text-gray-600 mb-2">
+          Previous months
+        </h2>
+
+        <div v-if="previousMonthGroups.length === 0" class="text-sm text-gray-500">
+          No previous months yet.
+        </div>
+
+        <div v-else class="space-y-3">
+          <div
+            v-for="m in previousMonthGroups"
+            :key="m.key"
+            class="bg-white rounded-lg shadow-md border border-gray-100 overflow-hidden"
+          >
+            <button
+              type="button"
+              class="w-full px-4 py-3 flex items-center justify-between"
+              @click="toggleMonth(m.key)"
+            >
+              <div class="text-left">
+                <div class="font-semibold">{{ m.label }}</div>
+                <div class="text-xs text-gray-600">
+                  {{ m.count }} receipt{{ m.count === 1 ? '' : 's' }} • £{{ m.total.toFixed(2) }}
+                </div>
+              </div>
+
+              <div class="text-gray-400">
+                {{ isMonthExpanded(m.key) ? '▲' : '▼' }}
+              </div>
+            </button>
+
+            <div v-if="isMonthExpanded(m.key)" class="border-t border-gray-100 px-4 py-3 space-y-3">
+              <ReceiptCard
+                v-for="r in m.receipts"
+                :key="r.id"
+                :receipt="r"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
