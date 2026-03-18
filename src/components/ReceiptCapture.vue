@@ -68,12 +68,12 @@
               v-model="formData.category"
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
             >
-              <option>Food & Drink</option>
-              <option>Groceries</option>
+              <option>Subsistence</option>
               <option>Transportation</option>
-              <option>Shopping</option>
-              <option>Entertainment</option>
-              <option>Other</option>
+              <option>Accommodation</option>
+              <option>Stage Attire</option>
+              <option>Small Equipment & Maintenance</option>
+              <option>Insurance</option>
             </select>
           </div>
 
@@ -125,7 +125,7 @@ const imagePreview = ref(null)
 const formData = ref({
   merchant: '',
   amount: '',
-  category: 'Food & Drink',
+  category: 'Subsistence',
   date: new Date().toISOString().split('T')[0],
   notes: ''
 })
