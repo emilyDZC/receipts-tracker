@@ -83,12 +83,12 @@
                 !isEditing && 'bg-gray-50'
               ]"
             >
-              <option>Food & Drink</option>
-              <option>Groceries</option>
+              <option>Subsistence</option>
               <option>Transportation</option>
-              <option>Shopping</option>
-              <option>Entertainment</option>
-              <option>Other</option>
+              <option>Accommodation</option>
+              <option>Stage Attire</option>
+              <option>Small Equipment & Maintenance</option>
+              <option>Insurance</option>
             </select>
           </div>
 
