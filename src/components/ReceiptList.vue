@@ -85,36 +85,21 @@
     </div>
 
     <div v-else class="space-y-4">
-      <router-link
-        v-for="receipt in receipts" 
+      <ReceiptCard
+        v-for="receipt in receipts"
         :key="receipt.id"
-        :to="`/receipt/${receipt.id}`"
-        class="bg-white rounded-lg shadow-md p-4 flex gap-4 hover:shadow-lg transition cursor-pointer block"
-      >
-        <img 
-          :src="receipt.imageUrl" 
-          :alt="receipt.merchant"
-          class="w-20 h-20 object-cover rounded flex-shrink-0"
-        >
-        <div class="flex-1">
-          <h3 class="text-gray-600 font-semibold text-lg">{{ receipt.merchant }}</h3>
-          <p class="text-2xl font-bold text-teal-600">£{{ receipt.amount.toFixed(2) }}</p>
-          <p class="text-sm text-gray-600">{{ receipt.category }}</p>
-          <p class="text-xs text-gray-500">{{ formatDate(receipt.date) }}</p>
-        </div>
-        <div class="flex items-center text-gray-400">
-          <span class="text-xl">›</span>
-        </div>
-      </router-link>
+        :receipt="receipt"
+      />
     </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref, onBeforeUnmount } from 'vue'
+import { onMounted, ref, onBeforeUnmount, computed } from 'vue'
 import { useReceipts } from '@/composables/useReceipts'
 import { useAuth } from '@/composables/useAuth'
 import { useRouter } from 'vue-router'
+import ReceiptCard from '@/components/ReceiptCard.vue'
 
 const router = useRouter()
 const { receipts, loading, error, fetchReceipts } = useReceipts()
@@ -123,14 +108,6 @@ const { logOut } = useAuth()
 onMounted(() => {
   fetchReceipts()
 })
-
-const formatDate = (dateString) => {
-  return new Date(dateString).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric'
-  })
-}
 
 const handleLogout = async () => {
   try {
@@ -163,4 +140,90 @@ const handleLogoutFromMenu = async () => {
   closeMenu()
   await handleLogout()
 }
+
+// -------- Grouping logic ------------- //
+
+const expandedMonths = ref(new Set())
+
+const toggleMonth = (key) => {
+  const next = new Set(expandedMonths.value)
+  if (next.has(key)) next.delete(key)
+  else next.add(key)
+  expandedMonths.value = next
+}
+
+const isMonthExpanded = (key) => expandedMonths.value.has(key)
+
+const pad2 = (n) => String(n).padStart(2, '0')
+const monthKeyFromDate = (d) => `${d.getFullYear()}-${pad2(d.getMonth() + 1)}`
+const currentMonthKey = monthKeyFromDate(new Date())
+
+// TODO: adjust this to your actual receipt date field
+const getReceiptDate = (r) => {
+  // Prefer explicit receipt date, fall back to createdAt
+  const raw = r.date ?? r.createdAt
+  if (!raw) return null
+
+  // If Firestore Timestamp, it may have toDate()
+  if (typeof raw === 'object' && typeof raw.toDate === 'function') return raw.toDate()
+
+  // ISO or YYYY-MM-DD
+  const d = new Date(raw)
+  return Number.isNaN(d.getTime()) ? null : d
+}
+
+const receiptsWithMonth = computed(() => {
+  return (receipts.value || [])
+    .map((r) => {
+      const d = getReceiptDate(r)
+      return {
+        ...r,
+        __date: d,
+        __monthKey: d ? monthKeyFromDate(d) : 'unknown',
+      }
+    })
+})
+
+const currentMonthReceipts = computed(() => {
+  return receiptsWithMonth.value
+    .filter((r) => r.__monthKey === currentMonthKey)
+    .sort((a, b) => (b.__date?.getTime() || 0) - (a.__date?.getTime() || 0))
+})
+
+const previousMonthGroups = computed(() => {
+  const map = new Map()
+
+  for (const r of receiptsWithMonth.value) {
+    if (r.__monthKey === currentMonthKey) continue
+    const key = r.__monthKey
+    if (!map.has(key)) map.set(key, [])
+    map.get(key).push(r)
+  }
+
+  const groups = Array.from(map.entries()).map(([key, list]) => {
+    const total = list.reduce((sum, r) => sum + (Number(r.amount) || 0), 0)
+    const count = list.length
+
+    // label like "February 2026"
+    let label = key
+    if (key !== 'unknown') {
+      const [y, m] = key.split('-')
+      const dateForLabel = new Date(Number(y), Number(m) - 1, 1)
+      label = dateForLabel.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })
+    }
+
+    list.sort((a, b) => (b.__date?.getTime() || 0) - (a.__date?.getTime() || 0))
+
+    return { key, label, total, count, receipts: list }
+  })
+
+  // newest month first; keep "unknown" at the end
+  groups.sort((a, b) => {
+    if (a.key === 'unknown') return 1
+    if (b.key === 'unknown') return -1
+    return b.key.localeCompare(a.key)
+  })
+
+  return groups
+})
 </script>
