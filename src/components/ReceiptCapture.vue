@@ -46,7 +46,7 @@
               type="text" 
               required
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-              placeholder="e.g., Coffee Shop"
+              placeholder="e.g. Coffee Shop"
             >
           </div>
 
